@@ -15,6 +15,15 @@
       "cache": false,
       "persistent": true
     },
+    "lint": {
+      "outputs": []
+    },
+    "fmt": {
+      "cache": false
+    },
+    "fmt.check": {
+      "outputs": []
+    },
     "test": {
       "dependsOn": ["build"],
       "outputs": []

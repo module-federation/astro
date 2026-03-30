@@ -11,8 +11,11 @@
     "build": "turbo run build --filter=@module-federation/astro",
     "build:host": "turbo run build --filter=example-host",
     "build:remote": "turbo run build --filter=example-remote",
+    "lint": "turbo run lint --filter=@module-federation/astro",
+    "fmt": "turbo run fmt --filter=@module-federation/astro",
+    "fmt.check": "turbo run fmt.check --filter=@module-federation/astro",
     "test": "turbo run test --filter=@module-federation/astro",
-    "ci": "turbo run build test --filter=@module-federation/astro --filter=\"example-*\"",
+    "ci": "turbo run build test --filter=@module-federation/astro --filter=\"example-*\" && pnpm lint && pnpm fmt.check",
     "changeset": "changeset",
     "changeset:status": "changeset status"
   },
@@ -23,6 +26,8 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0",
     "turbo": "^2.5.6"
   }
 }

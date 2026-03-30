@@ -1,9 +1,9 @@
-import { federation } from '@module-federation/vite';
-import type { AstroIntegration } from 'astro';
-import { createRequire } from 'node:module';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { federation } from "@module-federation/vite";
+import type { AstroIntegration } from "astro";
+import { createRequire } from "node:module";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export type RemoteObjectConfig = {
   type?: string;
@@ -14,7 +14,7 @@ export type RemoteObjectConfig = {
 };
 
 export type AstroModuleFederationOptions = {
-  mode?: 'auto' | 'client' | 'server';
+  mode?: "auto" | "client" | "server";
   name: string;
   filename?: string;
   manifest?: boolean | { filePath?: string; fileName?: string; disableAssetsAnalyze?: boolean };
@@ -26,18 +26,18 @@ export type AstroModuleFederationOptions = {
   dts?: boolean | Record<string, unknown>;
   dev?: boolean | Record<string, unknown>;
   varFilename?: string;
-  target?: 'web' | 'node';
+  target?: "web" | "node";
   virtualModuleDir?: string;
   ssr?: {
     localRemotes?: Record<string, string>;
   };
   bundleAllCSS?: boolean;
-  hostInitInjectLocation?: 'entry' | 'html';
+  hostInitInjectLocation?: "entry" | "html";
 };
 
 type RemoteValue = string | RemoteObjectConfig;
-type RemotesMap = AstroModuleFederationOptions['remotes'];
-type ExposesMap = AstroModuleFederationOptions['exposes'];
+type RemotesMap = AstroModuleFederationOptions["remotes"];
+type ExposesMap = AstroModuleFederationOptions["exposes"];
 type ExposeValue = string | { import: string };
 type RuntimeRemoteConfig = {
   alias: string;
@@ -49,45 +49,43 @@ type RuntimeRemoteConfig = {
 };
 
 const DEFAULT_NO_EXTERNAL = [
-  '@module-federation/runtime',
-  '@module-federation/runtime-core',
-  '@module-federation/sdk',
-  '@module-federation/vite',
+  "@module-federation/runtime",
+  "@module-federation/runtime-core",
+  "@module-federation/sdk",
+  "@module-federation/vite",
 ];
-const DEFAULT_OPTIMIZE_DEPS_INCLUDE = [
-  '@module-federation/runtime',
-];
-const DEFAULT_VIRTUAL_MODULE_DIR = '__mf__virtual';
-const DEFAULT_ASTRO_EXPOSES_TEMP_DIR = path.join('.__mf__temp', 'astro-exposes');
-const HOST_AUTO_INIT_TAG = '__H_A_I__';
-const ASTRO_RUNTIME_ALIAS = '@module-federation/astro/runtime';
+const DEFAULT_OPTIMIZE_DEPS_INCLUDE = ["@module-federation/runtime"];
+const DEFAULT_VIRTUAL_MODULE_DIR = "__mf__virtual";
+const DEFAULT_ASTRO_EXPOSES_TEMP_DIR = path.join(".__mf__temp", "astro-exposes");
+const HOST_AUTO_INIT_TAG = "__H_A_I__";
+const ASTRO_RUNTIME_ALIAS = "@module-federation/astro/runtime";
 const require = createRequire(import.meta.url);
-const viteEntrypointPath = require.resolve('@module-federation/vite');
+const viteEntrypointPath = require.resolve("@module-federation/vite");
 const viteRequire = createRequire(viteEntrypointPath);
-const RUNTIME_ESM_PATH = viteRequire.resolve('@module-federation/runtime/dist/index.js');
+const RUNTIME_ESM_PATH = viteRequire.resolve("@module-federation/runtime/dist/index.js");
 
 function packageNameEncode(name: string): string {
-  if (typeof name !== 'string') {
-    throw new TypeError('A string package name is required');
+  if (typeof name !== "string") {
+    throw new TypeError("A string package name is required");
   }
   return name
-    .replace(/@/g, '_mf_0_')
-    .replace(/\//g, '_mf_1_')
-    .replace(/-/g, '_mf_2_')
-    .replace(/\./g, '_mf_3_');
+    .replace(/@/g, "_mf_0_")
+    .replace(/\//g, "_mf_1_")
+    .replace(/-/g, "_mf_2_")
+    .replace(/\./g, "_mf_3_");
 }
 
 function isUrlLike(value: string): boolean {
-  return /^(https?:)?\/\//.test(value) || value.startsWith('/');
+  return /^(https?:)?\/\//.test(value) || value.startsWith("/");
 }
 
 function parseRemoteString(
   remoteKey: string,
   remoteValue: string,
 ): { entryGlobalName: string; entry: string } | null {
-  if (typeof remoteValue !== 'string') return null;
+  if (typeof remoteValue !== "string") return null;
 
-  const atIndex = remoteValue.lastIndexOf('@');
+  const atIndex = remoteValue.lastIndexOf("@");
   if (atIndex > 0) {
     const entryGlobalName = remoteValue.slice(0, atIndex);
     const entry = remoteValue.slice(atIndex + 1);
@@ -107,17 +105,17 @@ function parseRemoteString(
 }
 
 function normalizeRemoteValue(remoteKey: string, remoteValue: RemoteValue): RemoteValue {
-  if (typeof remoteValue !== 'string') return remoteValue;
+  if (typeof remoteValue !== "string") return remoteValue;
 
   const parsedRemote = parseRemoteString(remoteKey, remoteValue);
   if (!parsedRemote) return remoteValue;
 
   return {
-    type: 'var',
+    type: "var",
     name: remoteKey,
     entry: parsedRemote.entry,
     entryGlobalName: parsedRemote.entryGlobalName,
-    shareScope: 'default',
+    shareScope: "default",
   };
 }
 
@@ -131,32 +129,23 @@ function normalizeRemotes(remotes?: RemotesMap): RemotesMap {
 }
 
 function toPosixPath(filePath: string): string {
-  return filePath.split(path.sep).join('/');
+  return filePath.split(path.sep).join("/");
 }
 
 function ensureRelativeImportSpecifier(specifier: string): string {
-  if (
-    specifier.startsWith('./')
-    || specifier.startsWith('../')
-    || specifier.startsWith('/')
-  ) {
+  if (specifier.startsWith("./") || specifier.startsWith("../") || specifier.startsWith("/")) {
     return specifier;
   }
   return `./${specifier}`;
 }
 
 function toProjectRelativeSpecifier(projectRoot: string, absoluteFilePath: string): string {
-  return ensureRelativeImportSpecifier(
-    toPosixPath(path.relative(projectRoot, absoluteFilePath)),
-  );
+  return ensureRelativeImportSpecifier(toPosixPath(path.relative(projectRoot, absoluteFilePath)));
 }
 
-function resolveAstroExposeFile(
-  projectRoot: string,
-  exposeImport: string,
-): string | null {
-  const importWithoutQuery = exposeImport.split('?')[0].split('#')[0];
-  const normalizedImport = importWithoutQuery.startsWith('file://')
+function resolveAstroExposeFile(projectRoot: string, exposeImport: string): string | null {
+  const importWithoutQuery = exposeImport.split("?")[0].split("#")[0];
+  const normalizedImport = importWithoutQuery.startsWith("file://")
     ? fileURLToPath(importWithoutQuery)
     : importWithoutQuery;
   const absoluteBasePath = path.isAbsolute(normalizedImport)
@@ -165,35 +154,32 @@ function resolveAstroExposeFile(
   const candidates = [
     absoluteBasePath,
     `${absoluteBasePath}.astro`,
-    path.join(absoluteBasePath, 'index.astro'),
+    path.join(absoluteBasePath, "index.astro"),
   ];
 
   for (const candidatePath of candidates) {
-    if (!candidatePath.endsWith('.astro')) continue;
+    if (!candidatePath.endsWith(".astro")) continue;
     if (fs.existsSync(candidatePath)) return candidatePath;
   }
 
   return null;
 }
 
-function writeAstroExposeWrapper(
-  wrapperPath: string,
-  exposedAstroFilePath: string,
-): void {
+function writeAstroExposeWrapper(wrapperPath: string, exposedAstroFilePath: string): void {
   const relativeSourceImport = ensureRelativeImportSpecifier(
     toPosixPath(path.relative(path.dirname(wrapperPath), exposedAstroFilePath)),
   );
   const wrapperContents = [
-    '// Auto-generated by @module-federation/astro.',
-    '// @ts-ignore -- DTS generation runs plain tsc without Astro module resolution.',
+    "// Auto-generated by @module-federation/astro.",
+    "// @ts-ignore -- DTS generation runs plain tsc without Astro module resolution.",
     `import AstroExposedModule from ${JSON.stringify(relativeSourceImport)};`,
-    '',
-    'export default AstroExposedModule;',
-    '',
-  ].join('\n');
+    "",
+    "export default AstroExposedModule;",
+    "",
+  ].join("\n");
 
   fs.mkdirSync(path.dirname(wrapperPath), { recursive: true });
-  fs.writeFileSync(wrapperPath, wrapperContents, 'utf8');
+  fs.writeFileSync(wrapperPath, wrapperContents, "utf8");
 }
 
 function normalizeAstroExposesForFederation(
@@ -206,8 +192,8 @@ function normalizeAstroExposesForFederation(
   const normalizedExposes: Record<string, ExposeValue> = {};
 
   for (const [exposeKey, exposeValue] of Object.entries(exposes)) {
-    const exposeImport = typeof exposeValue === 'string' ? exposeValue : exposeValue.import;
-    if (typeof exposeImport !== 'string') {
+    const exposeImport = typeof exposeValue === "string" ? exposeValue : exposeValue.import;
+    if (typeof exposeImport !== "string") {
       normalizedExposes[exposeKey] = exposeValue;
       continue;
     }
@@ -220,7 +206,7 @@ function normalizeAstroExposesForFederation(
 
     hasAstroExpose = true;
 
-    const normalizedExposeKey = exposeKey.replace(/^\.?\//, '');
+    const normalizedExposeKey = exposeKey.replace(/^\.?\//, "");
     const wrapperFileName = `${packageNameEncode(normalizedExposeKey || exposeKey)}.ts`;
     const wrapperAbsolutePath = path.join(
       projectRoot,
@@ -231,7 +217,7 @@ function normalizeAstroExposesForFederation(
     const wrapperImport = toProjectRelativeSpecifier(projectRoot, wrapperAbsolutePath);
 
     normalizedExposes[exposeKey] =
-      typeof exposeValue === 'string'
+      typeof exposeValue === "string"
         ? wrapperImport
         : {
             ...exposeValue,
@@ -243,20 +229,20 @@ function normalizeAstroExposesForFederation(
 }
 
 function inferTargetFromMode(
-  mode: AstroModuleFederationOptions['mode'],
-): AstroModuleFederationOptions['target'] | undefined {
-  if (mode === 'client') return 'web';
-  if (mode === 'server') return 'node';
+  mode: AstroModuleFederationOptions["mode"],
+): AstroModuleFederationOptions["target"] | undefined {
+  if (mode === "client") return "web";
+  if (mode === "server") return "node";
   return undefined;
 }
 
 function getEnvTargetDefineValue(
-  target: AstroModuleFederationOptions['target'] | undefined,
+  target: AstroModuleFederationOptions["target"] | undefined,
 ): string {
-  if (target === 'web' || target === 'node') {
+  if (target === "web" || target === "node") {
     return JSON.stringify(target);
   }
-  return 'undefined';
+  return "undefined";
 }
 
 function hasConfiguredRemotes(remotes?: RemotesMap): boolean {
@@ -268,14 +254,14 @@ function toRuntimeRemotes(remotes?: RemotesMap): RuntimeRemoteConfig[] {
 
   return Object.entries(remotes)
     .map(([alias, remoteConfig]) => {
-      if (!remoteConfig || typeof remoteConfig !== 'object') return null;
+      if (!remoteConfig || typeof remoteConfig !== "object") return null;
       return {
         alias,
         name: remoteConfig.name || alias,
         entry: remoteConfig.entry,
-        type: remoteConfig.type || 'var',
+        type: remoteConfig.type || "var",
         entryGlobalName: remoteConfig.entryGlobalName || alias,
-        shareScope: remoteConfig.shareScope || 'default',
+        shareScope: remoteConfig.shareScope || "default",
       };
     })
     .filter(Boolean) as RuntimeRemoteConfig[];
@@ -283,24 +269,24 @@ function toRuntimeRemotes(remotes?: RemotesMap): RuntimeRemoteConfig[] {
 
 function toSsrRuntimeRemotes(remotes?: RemotesMap): RuntimeRemoteConfig[] {
   return toRuntimeRemotes(remotes).map((remote) => {
-    if (!remote.entry || !remote.entry.includes('.json')) {
+    if (!remote.entry || !remote.entry.includes(".json")) {
       return remote;
     }
 
     let entry = remote.entry;
     try {
       const parsed = new URL(remote.entry);
-      parsed.pathname = parsed.pathname.replace(/\/[^/]*$/, '/remoteEntry.global.js');
-      parsed.search = '';
+      parsed.pathname = parsed.pathname.replace(/\/[^/]*$/, "/remoteEntry.global.js");
+      parsed.search = "";
       entry = parsed.toString();
     } catch {
-      entry = remote.entry.replace(/\/[^/]*$/, '/remoteEntry.global.js');
+      entry = remote.entry.replace(/\/[^/]*$/, "/remoteEntry.global.js");
     }
 
     return {
       ...remote,
       entry,
-      type: 'global',
+      type: "global",
       entryGlobalName: remote.alias || remote.name,
     };
   });
@@ -311,14 +297,14 @@ function toRemoteSourceBases(remotes?: RemotesMap): Record<string, string> {
   if (!remotes) return sourceBases;
 
   for (const [alias, remoteConfig] of Object.entries(remotes)) {
-    if (!remoteConfig || typeof remoteConfig !== 'object' || !remoteConfig.entry) {
+    if (!remoteConfig || typeof remoteConfig !== "object" || !remoteConfig.entry) {
       continue;
     }
 
     try {
       const parsed = new URL(remoteConfig.entry);
-      parsed.pathname = parsed.pathname.replace(/\/[^/]*$/, '/');
-      parsed.search = '';
+      parsed.pathname = parsed.pathname.replace(/\/[^/]*$/, "/");
+      parsed.search = "";
       sourceBases[alias] = parsed.toString();
     } catch {
       continue;
@@ -339,18 +325,18 @@ function buildHostAutoInitImportId(
 }
 
 function resolveSsrLocalRemotes(
-  ssrOptions: AstroModuleFederationOptions['ssr'] | undefined,
+  ssrOptions: AstroModuleFederationOptions["ssr"] | undefined,
   hostRoot: string,
 ): Record<string, string> {
   const localRemotes = ssrOptions?.localRemotes;
-  if (!localRemotes || typeof localRemotes !== 'object') return {};
+  if (!localRemotes || typeof localRemotes !== "object") return {};
 
   const resolvedRemotes: Record<string, string> = {};
 
   for (const [alias, remotePath] of Object.entries(localRemotes)) {
-    if (typeof remotePath !== 'string') continue;
+    if (typeof remotePath !== "string") continue;
 
-    if (remotePath.startsWith('file://')) {
+    if (remotePath.startsWith("file://")) {
       resolvedRemotes[alias] = fileURLToPath(remotePath);
       continue;
     }
@@ -367,17 +353,17 @@ function resolveSsrLocalModuleFile(
 ): string | null {
   if (!localRemoteRoot || !remoteSubpath) return null;
 
-  const normalizedSubpath = remoteSubpath.replace(/^\/+/, '');
-  const baseDir = path.join(localRemoteRoot, 'src');
+  const normalizedSubpath = remoteSubpath.replace(/^\/+/, "");
+  const baseDir = path.join(localRemoteRoot, "src");
   const candidates = [
     path.join(baseDir, `${normalizedSubpath}.astro`),
     path.join(baseDir, `${normalizedSubpath}.ts`),
     path.join(baseDir, `${normalizedSubpath}.js`),
     path.join(baseDir, `${normalizedSubpath}.mjs`),
-    path.join(baseDir, normalizedSubpath, 'index.astro'),
-    path.join(baseDir, normalizedSubpath, 'index.ts'),
-    path.join(baseDir, normalizedSubpath, 'index.js'),
-    path.join(baseDir, normalizedSubpath, 'index.mjs'),
+    path.join(baseDir, normalizedSubpath, "index.astro"),
+    path.join(baseDir, normalizedSubpath, "index.ts"),
+    path.join(baseDir, normalizedSubpath, "index.js"),
+    path.join(baseDir, normalizedSubpath, "index.mjs"),
   ];
 
   return candidates.find((candidatePath) => fs.existsSync(candidatePath)) || null;
@@ -395,19 +381,17 @@ function ssrLoadRemoteRuntimePlugin(
   };
 
   return {
-    name: '@module-federation/astro:ssr-load-remote-runtime',
-    enforce: 'pre' as const,
+    name: "@module-federation/astro:ssr-load-remote-runtime",
+    enforce: "pre" as const,
     transform(code, id, transformOptions) {
       if (!transformOptions?.ssr) return null;
-      if (!id.includes('__loadRemote__')) return null;
+      if (!id.includes("__loadRemote__")) return null;
 
-      const remoteRequestMatch = code.match(
-        /loadRemote\((["'])([^"']+)\1\)/,
-      );
+      const remoteRequestMatch = code.match(/loadRemote\((["'])([^"']+)\1\)/);
       const remoteRequest = remoteRequestMatch?.[2];
       if (!remoteRequest) return null;
-      const [remoteAlias, ...remoteSubpathParts] = remoteRequest.split('/');
-      const remoteSubpath = remoteSubpathParts.join('/');
+      const [remoteAlias, ...remoteSubpathParts] = remoteRequest.split("/");
+      const remoteSubpath = remoteSubpathParts.join("/");
       const localRemoteRoot = ssrLocalRemotes[remoteAlias];
       const localModuleFile = resolveSsrLocalModuleFile(localRemoteRoot, remoteSubpath);
 
@@ -419,7 +403,7 @@ const exportModule = __mf_local_module__;
 export const __moduleExports = exportModule;
 export default exportModule?.default?.default ?? exportModule?.default ?? exportModule;
         `.trim();
-        return { code: moduleCode, syntheticNamedExports: '__moduleExports' };
+        return { code: moduleCode, syntheticNamedExports: "__moduleExports" };
       }
 
       const sourceBase = remoteSourceBases[remoteAlias];
@@ -439,14 +423,14 @@ const loadFromRemoteSource = async () => {
   return import(moduleDataUrl);
 };
 `
-        : '';
+        : "";
       const sourceLoadAttempt = sourceModuleUrl
         ? `
 try {
   exportModule = await loadFromRemoteSource();
 } catch {}
 `
-        : '';
+        : "";
       const moduleCode = `
 import { createInstance, getInstance } from '${ASTRO_RUNTIME_ALIAS}';
 
@@ -460,14 +444,12 @@ if (!exportModule) {
 export const __moduleExports = exportModule;
 export default exportModule?.default?.default ?? exportModule?.default ?? exportModule;
       `.trim();
-      return { code: moduleCode, syntheticNamedExports: '__moduleExports' };
+      return { code: moduleCode, syntheticNamedExports: "__moduleExports" };
     },
   };
 }
 
-function normalizeOptions(
-  options: AstroModuleFederationOptions,
-): AstroModuleFederationOptions {
+function normalizeOptions(options: AstroModuleFederationOptions): AstroModuleFederationOptions {
   const projectRoot = process.cwd();
   const virtualModuleDir = options.virtualModuleDir || DEFAULT_VIRTUAL_MODULE_DIR;
   const remotes = normalizeRemotes(options.remotes);
@@ -487,19 +469,15 @@ function normalizeOptions(
   };
 }
 
-export function moduleFederationAstro(
-  options: AstroModuleFederationOptions,
-): AstroIntegration {
+export function moduleFederationAstro(options: AstroModuleFederationOptions): AstroIntegration {
   return {
-    name: '@module-federation/astro',
+    name: "@module-federation/astro",
     hooks: {
-      'astro:config:setup': ({ command, injectScript, updateConfig }) => {
+      "astro:config:setup": ({ command, injectScript, updateConfig }) => {
         const federationOptions = normalizeOptions(options);
         const ssrLocalRemotes = resolveSsrLocalRemotes(options.ssr, process.cwd());
         const hasRemotes = hasConfiguredRemotes(federationOptions.remotes);
-        const envTargetDefineValue = getEnvTargetDefineValue(
-          federationOptions.target,
-        );
+        const envTargetDefineValue = getEnvTargetDefineValue(federationOptions.target);
         let hostAutoInitImportId: string | undefined;
 
         if (hasRemotes) {
@@ -509,7 +487,7 @@ export function moduleFederationAstro(
           );
           const injectedImport = `import ${JSON.stringify(hostAutoInitImportId)};`;
 
-          injectScript('page', injectedImport);
+          injectScript("page", injectedImport);
         }
 
         updateConfig({
@@ -519,7 +497,7 @@ export function moduleFederationAstro(
               ...federation(federationOptions),
             ],
             build: {
-              target: 'esnext',
+              target: "esnext",
             },
             optimizeDeps: {
               include: DEFAULT_OPTIMIZE_DEPS_INCLUDE,
@@ -529,7 +507,7 @@ export function moduleFederationAstro(
                   }
                 : {}),
               esbuildOptions: {
-                target: 'esnext',
+                target: "esnext",
               },
             },
             ssr: {
@@ -543,7 +521,7 @@ export function moduleFederationAstro(
                 },
               ],
             },
-            ...(command === 'dev'
+            ...(command === "dev"
               ? {
                   define: {
                     ENV_TARGET: envTargetDefineValue,
