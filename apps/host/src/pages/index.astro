@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Astro Host - Module Federation PoC">
+	<main>
+		<h1>Astro Host (CSR Module Federation)</h1>
+		<p>
+			Host on <code>http://localhost:4321</code>, remote on <code>http://localhost:4322</code>.
+		</p>
+		<nav>
+			<a href="/ssr">SSR static import page</a>
+			<a href="/ssr-dynamic">SSR dynamic import page</a>
+			<a href="/astro-component">Remote Astro component page</a>
+			<a href="/astro-component-dynamic">Remote Astro component dynamic page</a>
+		</nav>
+		<section class="page-note">
+			<h2>What this page does</h2>
+			<p>
+				This page is the client-side Module Federation demo. The host page loads first, then the
+				browser imports <code>astro_remote/widget</code> through MF runtime and mounts it into the
+				box below.
+			</p>
+			<p>
+				If the remote manifest or remote entry cannot be fetched, the status changes to
+				<code>Remote load failed</code>.
+			</p>
+			<pre class="snippet"><code><span class="token keyword">const</span> <span class="token variable">remote</span> <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'astro_remote/widget'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">remote</span><span class="token punctuation">.</span><span class="token function">mount</span><span class="token operator">?.</span><span class="token punctuation">(</span><span class="token builtin">document</span><span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#remote-widget'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+		</section>
+	<section class="remote-boundary boundary-csr">
+		<p class="boundary-label">Remote widget boundary</p>
+		<p id="remote-status">Loading remote module...</p>
+		<div id="remote-widget"></div>
+	</section>
+	</main>
+	<script>
+		import '../scripts/mf-host.ts';
+	</script>
+</Layout>
+
+<style>
+	main {
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 3rem 1rem;
+	}
+
+	h1 {
+		margin: 0 0 0.8rem;
+		font-size: 2rem;
+	}
+
+	.page-note {
+		border: 1px solid rgba(15, 23, 42, 0.16);
+		border-radius: 14px;
+		background: #f8fafc;
+		padding: 1rem;
+		margin: 0 0 1rem;
+	}
+
+	.page-note h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1rem;
+	}
+
+	.page-note p {
+		margin: 0.5rem 0 0;
+	}
+
+	.page-note .snippet {
+		margin: 0.75rem 0 0;
+		padding: 0.85rem 1rem;
+		border-radius: 12px;
+		background: #0f172a;
+		color: #e2e8f0;
+		overflow-x: auto;
+	}
+
+	.page-note .snippet code {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 0.95rem;
+	}
+
+	.token.keyword {
+		color: #7dd3fc;
+	}
+
+	.token.string {
+		color: #86efac;
+	}
+
+	.token.function {
+		color: #f9a8d4;
+	}
+
+	.token.builtin {
+		color: #c4b5fd;
+	}
+
+	.token.variable {
+		color: #f8fafc;
+	}
+
+	.token.operator,
+	.token.punctuation {
+		color: #94a3b8;
+	}
+
+	nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin: 0 0 1rem;
+	}
+
+	.remote-boundary {
+		position: relative;
+		margin-top: 1rem;
+		padding: 1.25rem 1rem 1rem;
+		border: 2px dashed;
+		border-radius: 18px;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+	}
+
+	.boundary-csr {
+		border-color: #0ea5e9;
+		box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.08);
+	}
+
+	.boundary-label {
+		position: absolute;
+		top: -0.75rem;
+		left: 0.9rem;
+		margin: 0;
+		padding: 0.2rem 0.6rem;
+		border-radius: 999px;
+		background: #0f172a;
+		color: #e0f2fe;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+	}
+
+	#remote-status {
+		font-weight: 600;
+	}
+
+	#remote-widget :global(*) {
+		box-sizing: border-box;
+	}
+</style>

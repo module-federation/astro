@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getRemoteServerMessage } from 'astro_remote/server';
+
+const message = getRemoteServerMessage({
+	from: 'Astro frontmatter static import',
+});
+---
+
+<Layout title="Astro Host - SSR Static Import">
+	<main>
+		<h1>Astro Host (SSR static import)</h1>
+		<section class="page-note">
+			<h2>What this page does</h2>
+			<p>
+				This page imports <code>astro_remote/server</code> directly in Astro frontmatter. The
+				remote function runs on the server during render, and the returned message is already in the
+				HTML response.
+			</p>
+			<pre class="snippet"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token function">getRemoteServerMessage</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'astro_remote/server'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token variable">message</span> <span class="token operator">=</span> <span class="token function">getRemoteServerMessage</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token property">from</span><span class="token punctuation">:</span> <span class="token string">'Astro frontmatter static import'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+		</section>
+		<p id="ssr-static-message">{message}</p>
+		<p><a href="/">Back to CSR page</a></p>
+	</main>
+</Layout>
+
+<style>
+	main {
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 3rem 1rem;
+	}
+
+	.page-note {
+		border: 1px solid rgba(15, 23, 42, 0.16);
+		border-radius: 14px;
+		background: #f8fafc;
+		padding: 1rem;
+		margin: 0 0 1rem;
+	}
+
+	.page-note h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1rem;
+	}
+
+	.page-note .snippet {
+		margin: 0.75rem 0 0;
+		padding: 0.85rem 1rem;
+		border-radius: 12px;
+		background: #0f172a;
+		color: #e2e8f0;
+		overflow-x: auto;
+	}
+
+	.page-note .snippet code {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 0.95rem;
+	}
+
+	.token.keyword {
+		color: #7dd3fc;
+	}
+
+	.token.string {
+		color: #86efac;
+	}
+
+	.token.function {
+		color: #f9a8d4;
+	}
+
+	.token.variable,
+	.token.property {
+		color: #f8fafc;
+	}
+
+	.token.operator,
+	.token.punctuation {
+		color: #94a3b8;
+	}
+</style>

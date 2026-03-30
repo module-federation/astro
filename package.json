@@ -1,0 +1,21 @@
+{
+  "name": "astro-module-federation",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "pnpm --filter @module-federation/astro build && pnpm --parallel --filter @poc/remote --filter @poc/host dev",
+    "dev:host": "pnpm --filter @module-federation/astro build && pnpm --filter @poc/host dev",
+    "dev:remote": "pnpm --filter @module-federation/astro build && pnpm --filter @poc/remote dev",
+    "build": "pnpm --filter @module-federation/astro build && pnpm -r --filter \"@poc/*\" build",
+    "build:host": "pnpm --filter @poc/host build",
+    "build:remote": "pnpm --filter @poc/remote build",
+    "preview:host": "pnpm --filter @poc/host preview",
+    "preview:remote": "pnpm --filter @poc/remote preview"
+  },
+  "pnpm": {
+    "overrides": {
+      "@module-federation/dts-plugin": "2.0.1"
+    }
+  }
+}

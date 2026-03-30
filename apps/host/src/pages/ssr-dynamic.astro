@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const remote = await import('astro_remote/server');
+const message = remote.getRemoteServerMessage({
+	from: 'Astro frontmatter dynamic import',
+});
+---
+
+<Layout title="Astro Host - SSR Dynamic Import">
+	<main>
+		<h1>Astro Host (SSR dynamic import)</h1>
+		<section class="page-note">
+			<h2>What this page does</h2>
+			<p>
+				This page uses <code>await import('astro_remote/server')</code> in Astro frontmatter. The
+				module is still loaded on the server, but through the dynamic import path instead of the
+				static import path.
+			</p>
+			<pre class="snippet"><code><span class="token keyword">const</span> <span class="token variable">remote</span> <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'astro_remote/server'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token variable">message</span> <span class="token operator">=</span> <span class="token variable">remote</span><span class="token punctuation">.</span><span class="token function">getRemoteServerMessage</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token property">from</span><span class="token punctuation">:</span> <span class="token string">'Astro frontmatter dynamic import'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+		</section>
+		<p id="ssr-dynamic-message">{message}</p>
+		<p><a href="/">Back to CSR page</a></p>
+	</main>
+</Layout>
+
+<style>
+	main {
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 3rem 1rem;
+	}
+
+	.page-note {
+		border: 1px solid rgba(15, 23, 42, 0.16);
+		border-radius: 14px;
+		background: #f8fafc;
+		padding: 1rem;
+		margin: 0 0 1rem;
+	}
+
+	.page-note h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1rem;
+	}
+
+	.page-note .snippet {
+		margin: 0.75rem 0 0;
+		padding: 0.85rem 1rem;
+		border-radius: 12px;
+		background: #0f172a;
+		color: #e2e8f0;
+		overflow-x: auto;
+	}
+
+	.page-note .snippet code {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 0.95rem;
+	}
+
+	.token.keyword {
+		color: #7dd3fc;
+	}
+
+	.token.string {
+		color: #86efac;
+	}
+
+	.token.function {
+		color: #f9a8d4;
+	}
+
+	.token.variable,
+	.token.property {
+		color: #f8fafc;
+	}
+
+	.token.operator,
+	.token.punctuation {
+		color: #94a3b8;
+	}
+</style>
