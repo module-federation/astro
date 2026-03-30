@@ -23,7 +23,6 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
 
       # Update npm to the latest version to enable OIDC
       - name: Update npm
