@@ -1,0 +1,50 @@
+{
+  "name": "@module-federation/astro",
+  "version": "0.0.0-beta.0",
+  "type": "module",
+  "description": "Astro integration for Module Federation using @module-federation/vite",
+  "license": "MIT",
+  "packageManager": "pnpm@10.6.5",
+  "keywords": [
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/module-federation/astro.git"
+  },
+  "homepage": "https://github.com/module-federation/astro#readme",
+  "bugs": {
+    "url": "https://github.com/module-federation/astro/issues"
+  },
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
+  "bin": {
+    "mf-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    }
+  },
+  "scripts": {
+    "prepublishOnly": "pnpm run build",
+    "changeset": "changeset",
+    "version:bump": "changeset version",
+    "release": "changeset publish",
+    "build":"echo 'build step here'"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
