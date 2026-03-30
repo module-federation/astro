@@ -1,0 +1,55 @@
+---
+const {
+  title = 'Remote Astro Component',
+  description = 'Rendered from astro_remote/RemoteCard',
+} = Astro.props;
+---
+
+<article class="remote-card">
+  <p class="remote-label">Remote component boundary</p>
+  <div class="remote-card__content">
+    <h2>{title}</h2>
+    <p>{description}</p>
+  </div>
+</article>
+
+<style>
+  .remote-card {
+    position: relative;
+    border: 2px dashed #e11d48;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #fff1f2, #fff, #f8fafc);
+    padding: 1.25rem 1rem 1rem;
+    box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.08);
+  }
+
+  .remote-label {
+    position: absolute;
+    top: -0.75rem;
+    left: 0.9rem;
+    margin: 0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: #881337;
+    color: #ffe4e6;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .remote-card__content {
+    border-radius: 12px;
+    background: linear-gradient(145deg, #fff, #f8fafc);
+    padding: 0.95rem 0.9rem;
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 0;
+    color: #334155;
+  }
+</style>

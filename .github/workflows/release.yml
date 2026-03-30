@@ -33,16 +33,16 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Build
-        run: pnpm run build
+      - name: Build package
+        run: pnpm run build:package
 
       - name: Resolve npm tag
         id: npm-tag
         run: |
-          VERSION=$(node -p 'require("./package.json").version')
-          TAG=$(node -p 'const version = require("./package.json").version; const prerelease = version.match(/-([0-9A-Za-z-]+)/); prerelease ? prerelease[1] : "latest"')
+          VERSION=$(node -p 'require("./packages/astro/package.json").version')
+          TAG=$(node -p 'const version = require("./packages/astro/package.json").version; const prerelease = version.match(/-([0-9A-Za-z-]+)/); prerelease ? prerelease[1] : "latest"')
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "Publishing version $VERSION with tag $TAG"
 
       - name: Publish to npm
-        run: npm publish --tag ${{ steps.npm-tag.outputs.tag }}
+        run: npm publish --provenance --access public --tag ${{ steps.npm-tag.outputs.tag }} --workspace packages/astro

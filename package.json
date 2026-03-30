@@ -1,48 +1,29 @@
 {
-  "name": "@module-federation/astro",
-  "version": "0.0.0-beta.1",
+  "name": "astro-module-federation",
+  "private": true,
   "type": "module",
-  "description": "Astro integration for Module Federation using @module-federation/vite",
-  "license": "MIT",
-  "packageManager": "pnpm@10.6.5",
-  "keywords": [
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/module-federation/astro.git"
-  },
-  "homepage": "https://github.com/module-federation/astro#readme",
-  "bugs": {
-    "url": "https://github.com/module-federation/astro/issues"
-  },
-  "main": "dist/server.js",
-  "types": "dist/server.d.ts",
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/server.d.ts",
-      "default": "./dist/server.js"
-    },
-    "./types": {
-      "types": "./dist/types.d.ts",
-      "default": "./dist/types.js"
-    }
-  },
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
-    "prepublishOnly": "pnpm run build",
+    "dev": "pnpm --filter @module-federation/astro build && turbo run dev --filter=example-remote --filter=example-host",
+    "dev:host": "pnpm --filter @module-federation/astro build && turbo run dev --filter=example-host",
+    "dev:remote": "pnpm --filter @module-federation/astro build && turbo run dev --filter=example-remote",
+    "build:package": "pnpm --filter @module-federation/astro build",
+    "build": "turbo run build --filter=@module-federation/astro",
+    "build:host": "turbo run build --filter=example-host",
+    "build:remote": "turbo run build --filter=example-remote",
+    "lint": "turbo run lint --filter=@module-federation/astro",
+    "fmt": "turbo run fmt --filter=@module-federation/astro",
+    "fmt.check": "turbo run fmt.check --filter=@module-federation/astro",
+    "test": "turbo run test --filter=@module-federation/astro",
+    "typecheck": "turbo run typecheck --filter=@module-federation/astro",
     "changeset": "changeset",
-    "version:bump": "changeset version",
-    "release": "changeset publish",
-    "build": "echo 'build step here'"
+    "changeset:status": "changeset status"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "@changesets/cli": "^2.30.0",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0",
+    "turbo": "^2.5.6"
   }
 }
