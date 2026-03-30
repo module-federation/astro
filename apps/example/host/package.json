@@ -1,5 +1,5 @@
 {
-  "name": "@poc/host",
+  "name": "example-host",
   "private": true,
   "type": "module",
   "version": "0.0.1",

@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "type": "module",
   "description": "Astro integration for Module Federation using @module-federation/vite",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/module-federation/astro.git",
@@ -22,8 +22,8 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -35,8 +35,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p ./tsconfig.json",
-    "test": "pnpm run build && node --test ./test/*.test.mjs"
+    "dev": "tsdown --watch",
+    "build": "tsdown",
+    "test": "node --test ./test/*.test.mjs"
   },
   "dependencies": {
     "@module-federation/runtime": "^2.1.0",
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "tsdown": "^0.21.7",
     "typescript": "^5.9.3"
   }
 }

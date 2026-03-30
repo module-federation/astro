@@ -8,7 +8,7 @@ import {
   buildHostAutoInitImportId,
   normalizeAstroExposesForFederation,
   normalizeRemotes,
-} from '../dist/index.js';
+} from '../dist/index.mjs';
 
 test('normalizes core-style remote value name@url into remote object config', () => {
   const remotes = normalizeRemotes({

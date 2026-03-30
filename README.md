@@ -2,10 +2,13 @@
 
 Repo: `module-federation/astro`
 
-`host` and `remote` are both Astro apps:
+Workspace orchestration: Turborepo (`turbo` + `turbo.json`).
+Plugin build: `tsdown` (`packages/astro/tsdown.config.ts`).
 
-- Host app: `apps/host` (`http://localhost:4321`)
-- Remote app: `apps/remote` (`http://localhost:4322`)
+`host` and `remote` live under the first example set:
+
+- Host app: `apps/examples/host` (`http://localhost:4321`)
+- Remote app: `apps/examples/remote` (`http://localhost:4322`)
 - Astro integration package: `packages/astro` (`@module-federation/astro`)
 
 Module Federation plugin: `@module-federation/vite`.
@@ -71,24 +74,24 @@ pnpm build:host
 
 ## Federation wiring
 
-- Remote exposes `./widget`, `./server`, and `./RemoteCard` in `apps/remote/astro.config.mjs`.
-- Host consumes `astro_remote/widget` from an Astro page script (`apps/host/src/pages/index.astro`).
-- Host consumes `astro_remote/server` from Astro frontmatter (`apps/host/src/pages/ssr*.astro`).
-- Host consumes `astro_remote/RemoteCard` directly from Astro syntax (`apps/host/src/pages/astro-component.astro`).
-- Host also consumes `astro_remote/RemoteCard` via `await import()` in Astro frontmatter and renders it as `<RemoteCard />` (`apps/host/src/pages/astro-component-dynamic.astro`).
-- Host remote mapping lives in `apps/host/astro.config.mjs` via `mf-manifest.json`.
+- Remote exposes `./widget`, `./server`, and `./RemoteCard` in `apps/examples/remote/astro.config.mjs`.
+- Host consumes `astro_remote/widget` from an Astro page script (`apps/examples/host/src/pages/index.astro`).
+- Host consumes `astro_remote/server` from Astro frontmatter (`apps/examples/host/src/pages/ssr*.astro`).
+- Host consumes `astro_remote/RemoteCard` directly from Astro syntax (`apps/examples/host/src/pages/astro-component.astro`).
+- Host also consumes `astro_remote/RemoteCard` via `await import()` in Astro frontmatter and renders it as `<RemoteCard />` (`apps/examples/host/src/pages/astro-component-dynamic.astro`).
+- Host remote mapping lives in `apps/examples/host/astro.config.mjs` via `mf-manifest.json`.
 
 ## DTS wiring
 
-- Remote generates federated types (`dts.generateTypes`) from typed exposes in `apps/remote/src/*.ts`.
+- Remote generates federated types (`dts.generateTypes`) from typed exposes in `apps/examples/remote/src/*.ts`.
 - Astro `.astro` exposes are auto-wrapped by `@module-federation/astro` for DTS generation, so end users can keep direct `.astro` exposes with `dts: true`.
-- Host consumes federated types (`dts.consumeTypes`) and maps module specifiers in `apps/host/tsconfig.json`:
+- Host consumes federated types (`dts.consumeTypes`) and maps module specifiers in `apps/examples/host/tsconfig.json`:
   - `astro_remote/*` -> `./@mf-types/astro_remote/*`
 - Host uses `consumeTypes.family: 6` and explicit `remoteTypeUrls` for dev zip download.
 - Type smoke-check:
 
 ```bash
-pnpm --filter @poc/host exec tsc --noEmit
+pnpm --filter example-host exec tsc --noEmit
 ```
 
 ## Package usage

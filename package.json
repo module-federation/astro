@@ -5,17 +5,14 @@
   "version": "0.0.1",
   "packageManager": "pnpm@10.28.2",
   "scripts": {
-    "dev": "pnpm --filter @module-federation/astro build && pnpm --parallel --filter @poc/remote --filter @poc/host dev",
-    "dev:host": "pnpm --filter @module-federation/astro build && pnpm --filter @poc/host dev",
-    "dev:remote": "pnpm --filter @module-federation/astro build && pnpm --filter @poc/remote dev",
-    "build": "pnpm --filter @module-federation/astro build && pnpm -r --filter \"@poc/*\" build",
-    "build:package": "pnpm --filter @module-federation/astro build",
-    "build:host": "pnpm --filter @poc/host build",
-    "build:remote": "pnpm --filter @poc/remote build",
-    "preview:host": "pnpm --filter @poc/host preview",
-    "preview:remote": "pnpm --filter @poc/remote preview",
-    "test": "pnpm --filter @module-federation/astro test",
-    "ci": "pnpm build && pnpm test",
+    "dev": "turbo run dev --filter=@module-federation/astro --filter=example-remote --filter=example-host",
+    "dev:host": "turbo run dev --filter=@module-federation/astro --filter=example-host",
+    "dev:remote": "turbo run dev --filter=@module-federation/astro --filter=example-remote",
+    "build": "turbo run build --filter=@module-federation/astro",
+    "build:host": "turbo run build --filter=example-host",
+    "build:remote": "turbo run build --filter=example-remote",
+    "test": "turbo run test --filter=@module-federation/astro",
+    "ci": "turbo run build test --filter=@module-federation/astro --filter=\"example-*\"",
     "changeset": "changeset",
     "changeset:status": "changeset status"
   },
@@ -25,6 +22,7 @@
     }
   },
   "devDependencies": {
-    "@changesets/cli": "^2.30.0"
+    "@changesets/cli": "^2.30.0",
+    "turbo": "^2.5.6"
   }
 }

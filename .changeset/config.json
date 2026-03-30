@@ -8,7 +8,7 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@poc/host",
-    "@poc/remote"
+    "example-host",
+    "example-remote"
   ]
 }
