@@ -39,9 +39,10 @@ jobs:
       - name: Resolve npm tag
         id: npm-tag
         run: |
-          TAG=$(node -e "const version = require('./package.json').version; const prerelease = version.match(/-([0-9A-Za-z-]+)/); process.stdout.write(prerelease ? prerelease[1] : 'latest');")
+          VERSION=$(node -p 'require("./package.json").version')
+          TAG=$(node -p 'const version = require("./package.json").version; const prerelease = version.match(/-([0-9A-Za-z-]+)/); prerelease ? prerelease[1] : "latest"')
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "Publishing version $(node -p \"require('./package.json').version\") with tag $TAG"
+          echo "Publishing version $VERSION with tag $TAG"
 
       - name: Publish to npm
         run: npm publish --tag ${{ steps.npm-tag.outputs.tag }}
