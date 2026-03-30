@@ -5,94 +5,10 @@ Repo: `module-federation/astro`
 Workspace orchestration: Turborepo (`turbo` + `turbo.json`).
 Plugin build: `tsdown` (`packages/astro/tsdown.config.ts`).
 
-`host` and `remote` live under the first example set:
-
-- Host app: `apps/examples/host` (`http://localhost:4321`)
-- Remote app: `apps/examples/remote` (`http://localhost:4322`)
-- Astro integration package: `packages/astro` (`@module-federation/astro`)
-
 Module Federation plugin: `@module-federation/vite`.
 Astro bridge package in this repo: `@module-federation/astro`.
-
-## Run
-
-1. Install:
-
-```bash
-pnpm install
-```
-
-2. Start both apps from the root:
-
-```bash
-pnpm dev
-```
-
-This starts:
-
-- remote on `4322`
-- host on `4321`
-
-3. Or start remote only:
-
-```bash
-pnpm dev:remote
-```
-
-4. Start host only (new terminal):
-
-```bash
-pnpm dev:host
-```
-
-Both apps use fixed ports with `strictPort: true`.
-If `4321` or `4322` is already taken, Astro now fails fast instead of silently moving to another port and breaking federation URLs.
-
-4. Open:
-
-- Host: `http://localhost:4321`
-- Remote standalone: `http://localhost:4322`
-- Host SSR static import page: `http://localhost:4321/ssr`
-- Host SSR dynamic import page: `http://localhost:4321/ssr-dynamic`
-- Host SSR component static import page: `http://localhost:4321/astro-component`
-- Host SSR component dynamic import page: `http://localhost:4321/astro-component-dynamic`
-
-## Build checks
-
-```bash
-pnpm --filter @module-federation/astro test
-pnpm build:remote
-pnpm build:host
-```
-
-## Release flow
-
-- Versioning: Changesets (`pnpm changeset`)
-- Release PR: GitHub Actions `Release Pull Request`
-- Publish: GitHub Actions `Publish (GitHub Release)`
-- Release notes + operational details: `docs/RELEASING.md`
-
-## Federation wiring
-
-- Remote exposes `./widget`, `./server`, and `./RemoteCard` in `apps/examples/remote/astro.config.mjs`.
-- Host consumes `astro_remote/widget` from an Astro page script (`apps/examples/host/src/pages/index.astro`).
-- Host consumes `astro_remote/server` from Astro frontmatter (`apps/examples/host/src/pages/ssr*.astro`).
-- Host consumes `astro_remote/RemoteCard` directly from Astro syntax (`apps/examples/host/src/pages/astro-component.astro`).
-- Host also consumes `astro_remote/RemoteCard` via `await import()` in Astro frontmatter and renders it as `<RemoteCard />` (`apps/examples/host/src/pages/astro-component-dynamic.astro`).
-- Host remote mapping lives in `apps/examples/host/astro.config.mjs` via `mf-manifest.json`.
-
-## DTS wiring
-
-- Remote generates federated types (`dts.generateTypes`) from typed exposes in `apps/examples/remote/src/*.ts`.
-- Astro `.astro` exposes are auto-wrapped by `@module-federation/astro` for DTS generation, so end users can keep direct `.astro` exposes with `dts: true`.
-- Host consumes federated types (`dts.consumeTypes`) and maps module specifiers in `apps/examples/host/tsconfig.json`:
-  - `astro_remote/*` -> `./@mf-types/astro_remote/*`
-- Host uses `consumeTypes.family: 6` and explicit `remoteTypeUrls` for dev zip download.
-- Type smoke-check:
-
-```bash
-pnpm --filter example-host exec tsc --noEmit
-```
+Published package source: `packages/astro`.
+Example apps: `apps/example` (see `apps/example/README.md`).
 
 ## Package usage
 
@@ -112,7 +28,7 @@ export default defineConfig({
 });
 ```
 
-## Astro integration behavior
+## Behavior
 
 - Remote strings are normalized to explicit MF remote objects.
 - `dts` defaults to `false`.
@@ -120,6 +36,20 @@ export default defineConfig({
 - SSR remote imports in Astro frontmatter are handled by an SSR transform path in `@module-federation/astro`.
 - That SSR path supports remote Astro components as well as plain server functions, including `await import('remote/Component')` followed by `<Component />`.
 - Dev target defaults to runtime inference (`ENV_TARGET = undefined`) so client/server contexts can coexist.
+
+## Build checks
+
+```bash
+pnpm --filter @module-federation/astro build
+pnpm --filter @module-federation/astro test
+```
+
+## Release flow
+
+- Versioning: Changesets (`pnpm changeset`)
+- Release PR: GitHub Actions `Release Pull Request`
+- Publish: GitHub Actions `Publish (GitHub Release)`
+- Release notes + operational details: `docs/RELEASING.md`
 
 ## Non-Astro SSR providers
 
