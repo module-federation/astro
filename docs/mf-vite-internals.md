@@ -4,9 +4,6 @@ summary: Practical architecture notes from mf-vite internals for implementing an
 read_when:
   - Implementing Astro MF integration
   - Debugging remote import rewrite issues
-source:
-  - /Users/nsttt/work/mf-vite/src
-  - /Users/nsttt/work/mf-vite/docs/architecture
 updated_at: 2026-03-05
 ---
 
@@ -14,10 +11,10 @@ updated_at: 2026-03-05
 
 Primary source files:
 
-- `/Users/nsttt/work/mf-vite/src/index.ts`
-- `/Users/nsttt/work/mf-vite/docs/architecture/overview.md`
-- `/Users/nsttt/work/mf-vite/docs/architecture/remote-module-loading.md`
-- `/Users/nsttt/work/mf-vite/docs/architecture/entry-injection.md`
+- `module-federation/vite` -> `src/index.ts`
+- `module-federation/vite` -> `docs/architecture/overview.md`
+- `module-federation/vite` -> `docs/architecture/remote-module-loading.md`
+- `module-federation/vite` -> `docs/architecture/entry-injection.md`
 
 ## Pipeline Summary
 

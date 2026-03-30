@@ -3,7 +3,7 @@ import type { AstroIntegration } from "astro";
 import { createRequire } from "node:module";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 export type RemoteObjectConfig = {
   type?: string;
@@ -141,6 +141,10 @@ function ensureRelativeImportSpecifier(specifier: string): string {
 
 function toProjectRelativeSpecifier(projectRoot: string, absoluteFilePath: string): string {
   return ensureRelativeImportSpecifier(toPosixPath(path.relative(projectRoot, absoluteFilePath)));
+}
+
+function toFileImportSpecifier(filePath: string): string {
+  return pathToFileURL(filePath).href;
 }
 
 function resolveAstroExposeFile(projectRoot: string, exposeImport: string): string | null {
@@ -372,9 +376,11 @@ function resolveSsrLocalModuleFile(
 function ssrLoadRemoteRuntimePlugin(
   federationOptions: AstroModuleFederationOptions,
   ssrLocalRemotes: Record<string, string>,
+  command: "dev" | "build" | "preview" | "sync",
 ) {
   const runtimeRemotes = toSsrRuntimeRemotes(federationOptions.remotes);
   const remoteSourceBases = toRemoteSourceBases(federationOptions.remotes);
+  const allowDevSourceFallback = command === "dev";
   const runtimeOptions = {
     name: federationOptions.name,
     remotes: runtimeRemotes,
@@ -396,9 +402,10 @@ function ssrLoadRemoteRuntimePlugin(
       const localModuleFile = resolveSsrLocalModuleFile(localRemoteRoot, remoteSubpath);
 
       if (localModuleFile) {
+        const localModuleSpecifier = toFileImportSpecifier(localModuleFile);
         const moduleCode = `
-import * as __mf_local_module__ from ${JSON.stringify(localModuleFile)};
-export * from ${JSON.stringify(localModuleFile)};
+import * as __mf_local_module__ from ${JSON.stringify(localModuleSpecifier)};
+export * from ${JSON.stringify(localModuleSpecifier)};
 const exportModule = __mf_local_module__;
 export const __moduleExports = exportModule;
 export default exportModule?.default?.default ?? exportModule?.default ?? exportModule;
@@ -408,7 +415,9 @@ export default exportModule?.default?.default ?? exportModule?.default ?? export
 
       const sourceBase = remoteSourceBases[remoteAlias];
       const sourceModuleUrl =
-        sourceBase && remoteSubpath ? `${sourceBase}src/${remoteSubpath}.js` : null;
+        allowDevSourceFallback && sourceBase && remoteSubpath
+          ? `${sourceBase}src/${remoteSubpath}.js`
+          : null;
       const sourceLoaderBlock = sourceModuleUrl
         ? `
 const loadFromRemoteSource = async () => {
@@ -428,7 +437,12 @@ const loadFromRemoteSource = async () => {
         ? `
 try {
   exportModule = await loadFromRemoteSource();
-} catch {}
+} catch (error) {
+  console.warn(
+    ${JSON.stringify(`[mf-astro] Failed dev SSR source fallback for ${remoteRequest}; using runtime.loadRemote instead.`)},
+    error,
+  );
+}
 `
         : "";
       const moduleCode = `
@@ -493,7 +507,7 @@ export function moduleFederationAstro(options: AstroModuleFederationOptions): As
         updateConfig({
           vite: {
             plugins: [
-              ssrLoadRemoteRuntimePlugin(federationOptions, ssrLocalRemotes),
+              ssrLoadRemoteRuntimePlugin(federationOptions, ssrLocalRemotes, command),
               ...federation(federationOptions),
             ],
             build: {

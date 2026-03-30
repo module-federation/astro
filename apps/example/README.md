@@ -21,6 +21,7 @@ pnpm dev
 
 This starts:
 
+- package build for `@module-federation/astro`
 - remote on `4322`
 - host on `4321`
 

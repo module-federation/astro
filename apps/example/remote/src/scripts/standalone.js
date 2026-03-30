@@ -1,7 +1,7 @@
-import { renderRemoteWidget } from '../widget.js';
+import { renderRemoteWidget } from "../widget";
 
-const mount = document.getElementById('remote-standalone');
+const mount = document.getElementById("remote-standalone");
 renderRemoteWidget(mount, {
-	from: 'remote standalone page',
-	loadedAt: new Date().toISOString(),
+  from: "remote standalone page",
+  loadedAt: new Date().toISOString(),
 });

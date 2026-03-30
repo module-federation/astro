@@ -4,14 +4,12 @@ summary: Inventory and categorization of module-federation/core packages relevan
 read_when:
   - Designing/expanding @module-federation/astro
   - Choosing runtime vs framework-specific dependencies
-source:
-  - /Users/nsttt/work/core/packages
 updated_at: 2026-03-05
 ---
 
 # Module Federation Core Package Map
 
-Snapshot source: `/Users/nsttt/work/core/packages`.
+Snapshot source: `module-federation/core`, `packages/`.
 
 ## Counts
 

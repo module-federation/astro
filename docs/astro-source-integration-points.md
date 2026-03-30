@@ -4,8 +4,6 @@ summary: Astro internals map for where Module Federation integrations should hoo
 read_when:
   - Building @module-federation/astro features
   - Debugging script import behavior in .astro files
-source:
-  - /Users/nsttt/git/astro/packages/astro/src
 updated_at: 2026-03-05
 ---
 
@@ -13,12 +11,12 @@ updated_at: 2026-03-05
 
 Primary source files:
 
-- `/Users/nsttt/git/astro/packages/astro/src/config/index.ts`
-- `/Users/nsttt/git/astro/packages/astro/src/integrations/hooks.ts`
-- `/Users/nsttt/git/astro/packages/astro/src/core/create-vite.ts`
-- `/Users/nsttt/git/astro/packages/astro/src/vite-plugin-astro/index.ts`
-- `/Users/nsttt/git/astro/packages/astro/src/vite-plugin-integrations-container/index.ts`
-- `/Users/nsttt/git/astro/packages/astro/src/vite-plugin-scripts/index.ts`
+- `withastro/astro` -> `packages/astro/src/config/index.ts`
+- `withastro/astro` -> `packages/astro/src/integrations/hooks.ts`
+- `withastro/astro` -> `packages/astro/src/core/create-vite.ts`
+- `withastro/astro` -> `packages/astro/src/vite-plugin-astro/index.ts`
+- `withastro/astro` -> `packages/astro/src/vite-plugin-integrations-container/index.ts`
+- `withastro/astro` -> `packages/astro/src/vite-plugin-scripts/index.ts`
 
 ## Where Astro Integrations Hook In
 

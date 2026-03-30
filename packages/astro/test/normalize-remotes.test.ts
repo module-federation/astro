@@ -234,10 +234,60 @@ test("ssr runtime plugin resolves configured local remotes to local source files
 
     expect(transformed).toBeTruthy();
     expect(transformed.code).toMatch(/import \* as __mf_local_module__/);
+    expect(transformed.code).toMatch(/file:\/\//);
     expect(transformed.code).toMatch(/remote\/src\/server\.ts/);
     expect(transformed.code).toMatch(/export \* from/);
   } finally {
     process.chdir(previousCwd);
     fs.rmSync(fixtureRoot, { recursive: true, force: true });
   }
+});
+
+test("ssr runtime plugin only injects source fallback in dev", async () => {
+  const createPlugin = (command: "dev" | "build") => {
+    const updatedConfigs = [];
+    const integration = moduleFederationAstro({
+      name: "astro_host",
+      remotes: {
+        astro_remote: "astro_remote@http://localhost:4322/mf-manifest.json",
+      },
+    });
+
+    const setupArgs = {
+      command,
+      injectScript() {},
+      updateConfig(config) {
+        updatedConfigs.push(config);
+        return config as never;
+      },
+    } as unknown as Parameters<(typeof integration.hooks)["astro:config:setup"]>[0];
+
+    integration.hooks["astro:config:setup"](setupArgs);
+
+    return updatedConfigs[0].vite.plugins.find(
+      (plugin) => plugin?.name === "@module-federation/astro:ssr-load-remote-runtime",
+    );
+  };
+
+  const devPlugin = createPlugin("dev");
+  const buildPlugin = createPlugin("build");
+
+  expect(devPlugin).toBeTruthy();
+  expect(buildPlugin).toBeTruthy();
+
+  const devTransformed = await devPlugin.transform(
+    'const mod = await runtime.loadRemote("astro_remote/server");',
+    "virtual:__loadRemote__astro_remote_server.js",
+    { ssr: true },
+  );
+  const buildTransformed = await buildPlugin.transform(
+    'const mod = await runtime.loadRemote("astro_remote/server");',
+    "virtual:__loadRemote__astro_remote_server.js",
+    { ssr: true },
+  );
+
+  expect(devTransformed.code).toMatch(/loadFromRemoteSource/);
+  expect(devTransformed.code).toMatch(/console\.warn/);
+  expect(buildTransformed.code).not.toMatch(/loadFromRemoteSource/);
+  expect(buildTransformed.code).not.toMatch(/console\.warn/);
 });
