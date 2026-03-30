@@ -19,11 +19,6 @@
     "changeset": "changeset",
     "changeset:status": "changeset status"
   },
-  "pnpm": {
-    "overrides": {
-      "@module-federation/dts-plugin": "2.0.1"
-    }
-  },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
     "oxfmt": "^0.42.0",
