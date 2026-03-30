@@ -3,19 +3,28 @@
   "private": true,
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "dev": "pnpm --filter @module-federation/astro build && pnpm --parallel --filter @poc/remote --filter @poc/host dev",
     "dev:host": "pnpm --filter @module-federation/astro build && pnpm --filter @poc/host dev",
     "dev:remote": "pnpm --filter @module-federation/astro build && pnpm --filter @poc/remote dev",
     "build": "pnpm --filter @module-federation/astro build && pnpm -r --filter \"@poc/*\" build",
+    "build:package": "pnpm --filter @module-federation/astro build",
     "build:host": "pnpm --filter @poc/host build",
     "build:remote": "pnpm --filter @poc/remote build",
     "preview:host": "pnpm --filter @poc/host preview",
-    "preview:remote": "pnpm --filter @poc/remote preview"
+    "preview:remote": "pnpm --filter @poc/remote preview",
+    "test": "pnpm --filter @module-federation/astro test",
+    "ci": "pnpm build && pnpm test",
+    "changeset": "changeset",
+    "changeset:status": "changeset status"
   },
   "pnpm": {
     "overrides": {
       "@module-federation/dts-plugin": "2.0.1"
     }
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.30.0"
   }
 }

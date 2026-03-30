@@ -6,16 +6,34 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/module-federation/astro.git",
+    "directory": "packages/astro"
+  },
+  "bugs": {
+    "url": "https://github.com/module-federation/astro/issues"
+  },
+  "homepage": "https://github.com/module-federation/astro#readme",
+  "keywords": [
+    "astro",
+    "module federation",
+    "microfrontend"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist/**/*",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "test": "pnpm run build && node --test ./test/*.test.mjs"

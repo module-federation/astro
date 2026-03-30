@@ -1,4 +1,6 @@
-# Astro Module Federation PoC (2 Astro apps)
+# Astro Module Federation
+
+Repo: `module-federation/astro`
 
 `host` and `remote` are both Astro apps:
 
@@ -55,9 +57,17 @@ If `4321` or `4322` is already taken, Astro now fails fast instead of silently m
 ## Build checks
 
 ```bash
+pnpm --filter @module-federation/astro test
 pnpm build:remote
 pnpm build:host
 ```
+
+## Release flow
+
+- Versioning: Changesets (`pnpm changeset`)
+- Release PR: GitHub Actions `Release Pull Request`
+- Publish: GitHub Actions `Publish (GitHub Release)`
+- Release notes + operational details: `docs/RELEASING.md`
 
 ## Federation wiring
 
