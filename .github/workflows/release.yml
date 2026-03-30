@@ -5,7 +5,7 @@ on:
 
 jobs:
   publish-latest:
-    name: Publish latest (npm)
+    name: Publish package (npm)
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # OIDC trusted publishing
@@ -36,5 +36,12 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Resolve npm tag
+        id: npm-tag
+        run: |
+          TAG=$(node -e "const version = require('./package.json').version; const prerelease = version.match(/-([0-9A-Za-z-]+)/); process.stdout.write(prerelease ? prerelease[1] : 'latest');")
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Publishing version $(node -p \"require('./package.json').version\") with tag $TAG"
+
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --tag ${{ steps.npm-tag.outputs.tag }}

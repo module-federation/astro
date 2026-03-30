@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/module-federation/astro.git"
+    "url": "git+https://github.com/module-federation/astro.git"
   },
   "homepage": "https://github.com/module-federation/astro#readme",
   "bugs": {
@@ -17,9 +17,6 @@
   },
   "main": "dist/server.js",
   "types": "dist/server.d.ts",
-  "bin": {
-    "mf-mcp-server": "dist/index.js"
-  },
   "files": [
     "dist",
     "README.md"
@@ -39,7 +36,7 @@
     "changeset": "changeset",
     "version:bump": "changeset version",
     "release": "changeset publish",
-    "build":"echo 'build step here'"
+    "build": "echo 'build step here'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0"
