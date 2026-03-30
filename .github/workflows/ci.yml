@@ -40,8 +40,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build and test
-        run: pnpm turbo run build test --filter=@module-federation/astro --filter="example-*"
+      - name: Build package and examples
+        run: pnpm turbo run build --filter=@module-federation/astro --filter="example-*"
+
+      - name: Test package
+        run: pnpm turbo run test --filter=@module-federation/astro
+
+      - name: Typecheck package
+        run: pnpm turbo run typecheck --filter=@module-federation/astro
 
       - name: Lint package
         run: pnpm turbo run lint --filter=@module-federation/astro

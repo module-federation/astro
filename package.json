@@ -15,6 +15,7 @@
     "fmt": "turbo run fmt --filter=@module-federation/astro",
     "fmt.check": "turbo run fmt.check --filter=@module-federation/astro",
     "test": "turbo run test --filter=@module-federation/astro",
+    "typecheck": "turbo run typecheck --filter=@module-federation/astro",
     "changeset": "changeset",
     "changeset:status": "changeset status"
   },
