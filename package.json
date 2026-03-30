@@ -8,6 +8,7 @@
     "dev": "pnpm --filter @module-federation/astro build && turbo run dev --filter=example-remote --filter=example-host",
     "dev:host": "pnpm --filter @module-federation/astro build && turbo run dev --filter=example-host",
     "dev:remote": "pnpm --filter @module-federation/astro build && turbo run dev --filter=example-remote",
+    "build:package": "pnpm --filter @module-federation/astro build",
     "build": "turbo run build --filter=@module-federation/astro",
     "build:host": "turbo run build --filter=example-host",
     "build:remote": "turbo run build --filter=example-remote",
