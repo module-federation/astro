@@ -8,7 +8,7 @@ Plugin build: `tsdown` (`packages/astro/tsdown.config.ts`).
 Module Federation plugin: `@module-federation/vite`.
 Astro bridge package in this repo: `@module-federation/astro`.
 Published package source: `packages/astro`.
-Example apps: `apps/example` (see `apps/example/README.md`).
+Example apps: `apps/example` (see `apps/example/README.md`) and `apps/react`.
 
 ## Package usage
 
@@ -36,6 +36,7 @@ export default defineConfig({
 - SSR remote imports in Astro frontmatter are handled by an SSR transform path in `@module-federation/astro`.
 - That SSR path supports remote Astro components as well as plain server functions, including `await import('remote/Component')` followed by `<Component />`.
 - Dev target defaults to runtime inference (`ENV_TARGET = undefined`) so client/server contexts can coexist.
+- A host consuming React remotes should configure `@astrojs/react`, `react`, and `react-dom` explicitly on the host.
 
 ## Build checks
 

@@ -116,7 +116,7 @@ test("auto-wraps .astro exposes into generated TS wrappers", () => {
   }
 });
 
-test("injects host auto-init and web target define for remotes in dev", () => {
+test("injects host auto-init and web target define for remotes in dev", async () => {
   const injectedScripts = [];
   const updatedConfigs = [];
   const integration = moduleFederationAstro({
@@ -138,7 +138,7 @@ test("injects host auto-init and web target define for remotes in dev", () => {
     },
   } as unknown as Parameters<(typeof integration.hooks)["astro:config:setup"]>[0];
 
-  integration.hooks["astro:config:setup"](setupArgs);
+  await integration.hooks["astro:config:setup"](setupArgs);
 
   expect(injectedScripts).toHaveLength(1);
   expect(injectedScripts[0].stage).toBe("page");
@@ -152,7 +152,7 @@ test("injects host auto-init and web target define for remotes in dev", () => {
   expect(updatedConfigs[0].vite.optimizeDeps.exclude[0]).toMatch(/hostAutoInit/);
 });
 
-test("does not inject host auto-init when no remotes are configured", () => {
+test("does not inject host auto-init when no remotes are configured", async () => {
   const injectedScripts = [];
   const updatedConfigs = [];
   const integration = moduleFederationAstro({
@@ -170,7 +170,7 @@ test("does not inject host auto-init when no remotes are configured", () => {
     },
   } as unknown as Parameters<(typeof integration.hooks)["astro:config:setup"]>[0];
 
-  integration.hooks["astro:config:setup"](setupArgs);
+  await integration.hooks["astro:config:setup"](setupArgs);
 
   expect(injectedScripts).toHaveLength(0);
   expect(updatedConfigs).toHaveLength(1);
@@ -189,7 +189,7 @@ test("ssr runtime plugin resolves configured local remotes to local source files
     fs.mkdirSync(path.join(remoteRoot, "src"), { recursive: true });
     fs.mkdirSync(hostRoot, { recursive: true });
     fs.writeFileSync(
-      path.join(remoteRoot, "src", "server.ts"),
+      path.join(remoteRoot, "src", "server.tsx"),
       'export const getMessage = () => "remote";\n',
       "utf8",
     );
@@ -218,7 +218,7 @@ test("ssr runtime plugin resolves configured local remotes to local source files
       },
     } as unknown as Parameters<(typeof integration.hooks)["astro:config:setup"]>[0];
 
-    integration.hooks["astro:config:setup"](setupArgs);
+    await integration.hooks["astro:config:setup"](setupArgs);
 
     const runtimePlugin = updatedConfigs[0].vite.plugins.find(
       (plugin) => plugin?.name === "@module-federation/astro:ssr-load-remote-runtime",
@@ -235,7 +235,7 @@ test("ssr runtime plugin resolves configured local remotes to local source files
     expect(transformed).toBeTruthy();
     expect(transformed.code).toMatch(/import \* as __mf_local_module__/);
     expect(transformed.code).toMatch(/file:\/\//);
-    expect(transformed.code).toMatch(/remote\/src\/server\.ts/);
+    expect(transformed.code).toMatch(/remote\/src\/server\.tsx/);
     expect(transformed.code).toMatch(/export \* from/);
   } finally {
     process.chdir(previousCwd);
@@ -244,7 +244,7 @@ test("ssr runtime plugin resolves configured local remotes to local source files
 });
 
 test("ssr runtime plugin only injects source fallback in dev", async () => {
-  const createPlugin = (command: "dev" | "build") => {
+  const createPlugin = async (command: "dev" | "build") => {
     const updatedConfigs = [];
     const integration = moduleFederationAstro({
       name: "astro_host",
@@ -262,15 +262,15 @@ test("ssr runtime plugin only injects source fallback in dev", async () => {
       },
     } as unknown as Parameters<(typeof integration.hooks)["astro:config:setup"]>[0];
 
-    integration.hooks["astro:config:setup"](setupArgs);
+    await integration.hooks["astro:config:setup"](setupArgs);
 
     return updatedConfigs[0].vite.plugins.find(
       (plugin) => plugin?.name === "@module-federation/astro:ssr-load-remote-runtime",
     );
   };
 
-  const devPlugin = createPlugin("dev");
-  const buildPlugin = createPlugin("build");
+  const devPlugin = await createPlugin("dev");
+  const buildPlugin = await createPlugin("build");
 
   expect(devPlugin).toBeTruthy();
   expect(buildPlugin).toBeTruthy();

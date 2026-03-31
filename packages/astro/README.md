@@ -29,6 +29,7 @@ Notes:
 - In `astro dev`, `ENV_TARGET` defaults to `undefined` so runtime infers browser vs node context.
 - `mode: 'client' | 'server'` maps to MF target `'web' | 'node'` if you want to force one side.
 - SSR `.astro` remote imports are transformed through an Astro SSR runtime path.
+- React remotes still need explicit host setup for `@astrojs/react`, `react`, and `react-dom`.
 
 ## `.astro` usage
 

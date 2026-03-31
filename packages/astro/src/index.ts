@@ -361,10 +361,14 @@ function resolveSsrLocalModuleFile(
   const baseDir = path.join(localRemoteRoot, "src");
   const candidates = [
     path.join(baseDir, `${normalizedSubpath}.astro`),
+    path.join(baseDir, `${normalizedSubpath}.tsx`),
+    path.join(baseDir, `${normalizedSubpath}.jsx`),
     path.join(baseDir, `${normalizedSubpath}.ts`),
     path.join(baseDir, `${normalizedSubpath}.js`),
     path.join(baseDir, `${normalizedSubpath}.mjs`),
     path.join(baseDir, normalizedSubpath, "index.astro"),
+    path.join(baseDir, normalizedSubpath, "index.tsx"),
+    path.join(baseDir, normalizedSubpath, "index.jsx"),
     path.join(baseDir, normalizedSubpath, "index.ts"),
     path.join(baseDir, normalizedSubpath, "index.js"),
     path.join(baseDir, normalizedSubpath, "index.mjs"),
@@ -487,7 +491,9 @@ export function moduleFederationAstro(options: AstroModuleFederationOptions): As
   return {
     name: "@module-federation/astro",
     hooks: {
-      "astro:config:setup": ({ command, injectScript, updateConfig }) => {
+      "astro:config:setup": async (setupArgs) => {
+        const { command, injectScript, updateConfig } = setupArgs;
+        const applyConfigUpdate = updateConfig as (config: unknown) => void;
         const federationOptions = normalizeOptions(options);
         const ssrLocalRemotes = resolveSsrLocalRemotes(options.ssr, process.cwd());
         const hasRemotes = hasConfiguredRemotes(federationOptions.remotes);
@@ -504,11 +510,11 @@ export function moduleFederationAstro(options: AstroModuleFederationOptions): As
           injectScript("page", injectedImport);
         }
 
-        updateConfig({
+        applyConfigUpdate({
           vite: {
             plugins: [
               ssrLoadRemoteRuntimePlugin(federationOptions, ssrLocalRemotes, command),
-              ...federation(federationOptions),
+              ...(federation(federationOptions) as unknown[]),
             ],
             build: {
               target: "esnext",
@@ -552,5 +558,5 @@ export function moduleFederationAstro(options: AstroModuleFederationOptions): As
 export const moduleFederation = moduleFederationAstro;
 export { buildHostAutoInitImportId };
 export { normalizeAstroExposesForFederation };
-export { normalizeRemotes };
+export { normalizeRemotes, toSsrRuntimeRemotes };
 export default moduleFederationAstro;
