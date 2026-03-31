@@ -5,7 +5,7 @@ read_when:
   - Preparing a release
   - Wiring npm publish automation
   - Updating release pipeline behavior
-updated_at: 2026-03-30
+updated_at: 2026-03-31
 ---
 
 # Releasing
@@ -28,7 +28,8 @@ This repo uses Changesets for versioning and publishes `@module-federation/astro
      - Release trigger: `latest` for stable releases, `next` for prereleases
      - Manual trigger (`workflow_dispatch`): `latest` or `next`
    - Pre-release versioning:
-     - On `prereleased` events, workflow patches `packages/astro/package.json` to `<base>-next.<N>` before publish.
+  - On `prereleased` events, workflow patches `packages/astro/package.json` to `<base>-next.<N>` before publish.
+  - npm publish runs from `packages/astro` directly; this repo uses `pnpm-workspace.yaml`, not root npm workspaces.
    - Existing version handling:
      - If the exact version already exists on npm and already has the target dist-tag, publish is skipped.
      - If the version exists but the target dist-tag points elsewhere, workflow fails.

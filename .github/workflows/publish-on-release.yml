@@ -111,7 +111,7 @@ jobs:
           fi
 
           NEXT_VERSION="${BASE_VERSION}-next.${NEXT_NUMBER}"
-          npm pkg set version="$NEXT_VERSION" --workspace packages/astro
+          npm pkg set version="$NEXT_VERSION" --prefix packages/astro
           echo "Set prerelease version: $NEXT_VERSION"
 
       - name: Build package
@@ -177,7 +177,8 @@ jobs:
 
       - name: Publish to npm
         if: steps.publish_action.outputs.action == 'publish'
-        run: npm publish --provenance --tag "${{ steps.dist.outputs.dist_tag }}" --access public --workspace packages/astro
+        working-directory: packages/astro
+        run: npm publish --provenance --tag "${{ steps.dist.outputs.dist_tag }}" --access public
 
       - name: Skip npm publish
         if: steps.publish_action.outputs.action == 'skip'
