@@ -45,4 +45,5 @@ jobs:
           echo "Publishing version $VERSION with tag $TAG"
 
       - name: Publish to npm
-        run: npm publish --provenance --access public --tag ${{ steps.npm-tag.outputs.tag }} --workspace packages/astro
+        run: pnpm -r publish --tag ${{ steps.npm-tag.outputs.tag }}
+          
