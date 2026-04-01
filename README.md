@@ -48,7 +48,7 @@ pnpm --filter @module-federation/astro test
 
 - Versioning: Changesets (`pnpm changeset`)
 - Release PR: GitHub Actions `Release Pull Request`
-- Publish: GitHub Actions `Publish (GitHub Release)`
+- Publish: GitHub Actions `Release`
 - Release notes + operational details: `docs/RELEASING.md`
 
 ## Non-Astro SSR providers
