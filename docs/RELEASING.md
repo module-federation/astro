@@ -35,7 +35,7 @@ This repo uses Changesets for versioning and publishes `@module-federation/astro
      - If the version exists but the target dist-tag points elsewhere, workflow fails.
    - Uses npm trusted publishing (OIDC + provenance)
 
-## Manual Publish
+## Manual Trigger
 
 Use the `Release` workflow with `Run workflow`:
 
