@@ -5,7 +5,7 @@ read_when:
   - Preparing a release
   - Wiring npm publish automation
   - Updating release pipeline behavior
-updated_at: 2026-03-31
+updated_at: 2026-04-01
 ---
 
 # Releasing
@@ -23,7 +23,7 @@ This repo uses Changesets for versioning and publishes `@module-federation/astro
    - Stable: normal release
    - Pre-release: prerelease on the same base tag (example: `0.2.0`)
 4. GitHub Actions publishes to npm
-   - Workflow: `Publish (GitHub Release)` (`.github/workflows/publish-on-release.yml`)
+   - Workflow: `Release` (`.github/workflows/release.yml`)
    - Dist-tag:
      - Release trigger: `latest` for stable releases, `next` for prereleases
      - Manual trigger (`workflow_dispatch`): `latest` or `next`
@@ -35,9 +35,9 @@ This repo uses Changesets for versioning and publishes `@module-federation/astro
      - If the version exists but the target dist-tag points elsewhere, workflow fails.
    - Uses npm trusted publishing (OIDC + provenance)
 
-## Manual Publish
+## Manual Trigger
 
-Use the `Publish (GitHub Release)` workflow with `Run workflow`:
+Use the `Release` workflow with `Run workflow`:
 
 - `version=latest`: publish current `branch` head with `latest`
 - `version=next`: generate a snapshot version (`changeset version --snapshot`) and publish with `next`
@@ -48,5 +48,5 @@ Use the `Publish (GitHub Release)` workflow with `Run workflow`:
 - Tags must not start with `v`.
 - npm trusted publisher must be configured for:
   - repo: `module-federation/astro`
-  - workflow: `.github/workflows/publish-on-release.yml`
+  - workflow: `.github/workflows/release.yml`
   - environment: `Publish`
