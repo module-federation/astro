@@ -1,17 +1,15 @@
 # Astro Module Federation
 
-Repo: `module-federation/astro`
-
-Workspace orchestration: Turborepo (`turbo` + `turbo.json`).
-Plugin build: `tsdown` (`packages/astro/tsdown.config.ts`).
-
-Module Federation plugin: `@module-federation/vite`.
-Astro bridge package in this repo: `@module-federation/astro`.
-Published package source: `packages/astro`.
-Example apps: `apps/example` (see `apps/example/README.md`).
+Use Module Federation in Astro apps with `@module-federation/astro`, built on top of `@module-federation/vite`.
 
 > [!IMPORTANT]
 > `@module-federation/astro` is still in beta. Expect rough edges and API changes while the integration settles. Feedback, bugs, and edge cases are welcome in GitHub Issues for this repo.
+
+## What you get
+
+- Astro integration wrapper around Module Federation for host/remote setups.
+- Dev/runtime wiring so `.astro` script imports and SSR remote imports work.
+- Support for remote Astro components, server functions, and browser-side widgets.
 
 ## Package usage
 
@@ -30,6 +28,13 @@ export default defineConfig({
   ],
 });
 ```
+
+## Example apps
+
+- Host app: `apps/example/host` on `http://localhost:4321`
+- Remote app: `apps/example/remote` on `http://localhost:4322`
+- Start both from repo root with `pnpm dev`
+- More example details: `apps/example/README.md`
 
 ## Behavior
 
@@ -60,3 +65,10 @@ pnpm --filter @module-federation/astro test
 - `mf-vite` already emits `ssrRemoteEntry` in its manifest, and MF runtime prefers that entry on the server.
 - Rsbuild/Rslib providers should emit SSR assets with `target: 'dual'` (or legacy `ssr: true`).
 - Astro as consumer keeps using MF runtime on the server; the loaded module can then be rendered as `<Component />` if it exports a server-renderable component.
+
+## Repo layout
+
+- Package: `packages/astro`
+- Example apps: `apps/example`
+- Main package README: `packages/astro/README.md`
+- Release docs: `docs/RELEASING.md`
