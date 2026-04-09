@@ -10,6 +10,9 @@ Astro bridge package in this repo: `@module-federation/astro`.
 Published package source: `packages/astro`.
 Example apps: `apps/example` (see `apps/example/README.md`).
 
+> [!IMPORTANT]
+> `@module-federation/astro` is still in beta. Expect rough edges and API changes while the integration settles. Feedback, bugs, and edge cases are welcome in GitHub Issues for this repo.
+
 ## Package usage
 
 ```ts
