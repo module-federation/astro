@@ -44,6 +44,7 @@ export default defineConfig({
 - SSR remote imports in Astro frontmatter are handled by an SSR transform path in `@module-federation/astro`.
 - That SSR path supports remote Astro components as well as plain server functions, including `await import('remote/Component')` followed by `<Component />`.
 - Dev target defaults to runtime inference (`ENV_TARGET = undefined`) so client/server contexts can coexist.
+- A host consuming React remotes should configure `@astrojs/react`, `react`, and `react-dom` explicitly on the host.
 
 ## Build checks
 

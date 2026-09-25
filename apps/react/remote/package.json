@@ -1,0 +1,25 @@
+{
+  "name": "react-remote",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "pnpm run build && astro preview --host localhost --port 4332",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/node": "^10.0.4",
+    "@astrojs/react": "^5.0.2",
+    "@module-federation/astro": "workspace:*",
+    "astro": "^6.1.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "vite": "^6.4.1"
+  }
+}

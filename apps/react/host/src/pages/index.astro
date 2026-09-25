@@ -1,0 +1,78 @@
+---
+import CounterCard from 'react_remote/components/CounterCard';
+
+const ssrCount = 0;
+const ssrTitle = 'Server-rendered federated React card';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>React host</title>
+  </head>
+  <body style="background:#f3efe3;color:#1c1b18;font-family:Georgia,serif;margin:0;min-height:100vh;">
+    <main style="display:grid;gap:2rem;max-width:72rem;margin:0 auto;padding:4rem 1.5rem;">
+      <div style="display:grid;gap:0.6rem;max-width:42rem;">
+        <p style="color:#8a4b08;letter-spacing:0.18em;margin:0;text-transform:uppercase;">host app</p>
+        <h1 style="font-size:clamp(3rem,8vw,5.5rem);line-height:0.92;margin:0;">Astro host; React explicit, remote federated.</h1>
+        <p style="font-size:1.08rem;line-height:1.65;margin:0;opacity:0.8;">
+          The host owns its React setup through <code>@astrojs/react</code>, <code>react</code>, and <code>react-dom</code>.
+          Federation only loads the remote module boundary.
+        </p>
+      </div>
+
+      <section style="display:grid;gap:1.25rem;">
+        <h2 style="font-size:1.1rem;letter-spacing:0.08em;margin:0;text-transform:uppercase;">SSR render</h2>
+        <div id="ssr-remote-counter">
+          <CounterCard title={ssrTitle} count={ssrCount} tone="sun" />
+        </div>
+      </section>
+
+      <section style="display:grid;gap:1.25rem;">
+        <h2 style="font-size:1.1rem;letter-spacing:0.08em;margin:0;text-transform:uppercase;">Client-only render</h2>
+        <div id="client-only-remote-counter"></div>
+      </section>
+    </main>
+
+    <script>
+      import React, { useState } from 'react';
+      import { createRoot, hydrateRoot } from 'react-dom/client';
+      import RemoteCounterCard from 'react_remote/components/CounterCard';
+
+      const ssrMountNode = document.querySelector('#ssr-remote-counter');
+      const mountNode = document.querySelector('#client-only-remote-counter');
+
+      if (ssrMountNode) {
+        function HydratedRemoteCounter() {
+          const [count, setCount] = useState(0);
+
+          return React.createElement(RemoteCounterCard, {
+            title: 'Server-rendered federated React card',
+            count,
+            onIncrement: () => setCount((value) => value + 1),
+            tone: 'sun',
+          });
+        }
+
+        hydrateRoot(ssrMountNode, React.createElement(HydratedRemoteCounter));
+      }
+
+      if (mountNode) {
+        function ClientOnlyRemoteCounter() {
+          const [count, setCount] = useState(0);
+
+          return React.createElement(RemoteCounterCard, {
+            title: 'Client-rendered federated React card',
+            count,
+            onIncrement: () => setCount((value) => value + 1),
+            tone: 'ink',
+          });
+        }
+
+        createRoot(mountNode).render(React.createElement(ClientOnlyRemoteCounter));
+      }
+    </script>
+  </body>
+</html>

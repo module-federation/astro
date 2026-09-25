@@ -70,5 +70,6 @@ Implemented in this PoC package:
 ## Remaining Constraints
 
 - SSR path depends on SSR-safe remote modules (no DOM usage).
+- React remotes are not zero-dependency on the host. Astro still needs a local renderer package plus `react`/`react-dom` available to resolve `clientEntrypoint` and `serverEntrypoint`; host config should own that setup explicitly.
 - For non-Astro providers, server manifests need `ssrRemoteEntry`; MF runtime will prefer that entry in Node/server execution.
 - `mf-vite` still emits serve-time warnings around `plugin:add-entry` (`emitFile()` in serve mode).
